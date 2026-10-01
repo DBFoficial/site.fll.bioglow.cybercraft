@@ -27,6 +27,18 @@
       <h2 class="text-lg font-semibold text-slate-800 border-b border-slate-100 pb-2">1. Dados da Parcela</h2>
       
       <div class="grid md:grid-cols-2 gap-4">
+        <!-- Local / Identificação da Área (Novo) -->
+        <div class="md:col-span-2">
+          <label for="localArea" class="block text-sm font-medium text-slate-700 mb-1">
+            Local / Identificação da Área
+          </label>
+          <div class="relative">
+            <input type="text" id="localArea" placeholder="Ex: Sítio Bela Vista - Talhão 02 / Salto-SP"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition" required>
+            <i data-lucide="map-pin" class="w-5 h-5 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
+        </div>
+
         <!-- Quantidade de Rebrotas -->
         <div>
           <label for="rebrotas" class="block text-sm font-medium text-slate-700 mb-1">
@@ -63,7 +75,7 @@
           </div>
         </div>
 
-        <!-- Destino das Mudas Removidas (Novo) -->
+        <!-- Destino das Mudas Removidas -->
         <div>
           <label for="destinoMudasRemovidas" class="block text-sm font-medium text-slate-700 mb-1">
             Destino das Mudas Removidas
@@ -156,8 +168,11 @@
         <div class="flex items-center gap-4">
           <div id="statusIcon" class="text-5xl">🟡</div>
           <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Status da Área</span>
-            <h2 id="statusTitle" class="text-2xl font-extrabold text-slate-900">STATUS DA ÁREA: EM RECUPERAÇÃO</h2>
+            <div class="flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-500"></i>
+              <span id="resumoLocalText" class="text-xs font-bold uppercase tracking-wider text-slate-600">Local da Área</span>
+            </div>
+            <h2 id="statusTitle" class="text-2xl font-extrabold text-slate-900 mt-1">STATUS DA ÁREA: EM RECUPERAÇÃO</h2>
             <p id="statusDesc" class="text-sm text-slate-600 mt-0.5">Regeneração intermediária registrada.</p>
           </div>
         </div>
@@ -277,6 +292,7 @@
     document.getElementById('calcForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
+      const localArea = document.getElementById('localArea').value.trim() || 'Local não especificado';
       const rebrotas = parseFloat(document.getElementById('rebrotas').value) || 0;
       const mudas = parseFloat(document.getElementById('mudas').value) || 0;
       const nativasRemov = parseInt(document.getElementById('nativasRemovidas').value) || 0;
@@ -293,7 +309,8 @@
       const total = rebrotas + mudas;
       const densidade = total / area;
 
-      // Atualizar métricas no painel inferior
+      // Atualizar dados de resumo e cabeçalho do resultado
+      document.getElementById('resumoLocalText').textContent = localArea;
       document.getElementById('resumoTotal').textContent = total;
       document.getElementById('resumoArea').textContent = `${area} m²`;
       document.getElementById('resumoNativasRemov').textContent = nativasRemov;
