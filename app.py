@@ -1,0 +1,75 @@
+import os
+import sqlite3
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Cria a pasta de uploads se não existir
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Inicializa o Banco de Dados SQLite
+def init_db():
+    conn = sqlite3.connect('dados_area.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS registros (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            rebrotas INTEGER,
+            mudas INTEGER,
+            tamanho REAL,
+            visitas INTEGER,
+            foto_path TEXT,
+            status TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        # Captura os dados do formulário
+        rebrotas = int(request.form['rebrotas'])
+        mudas = int(request.form['mudas'])
+        tamanho = float(request.form['tamanho'])
+        visitas = int(request.form['visitas'])
+        
+        # Salva o arquivo da foto
+        foto = request.files['foto']
+        foto_path = os.path.join(app.config['UPLOAD_FOLDER'], foto.filename)
+        foto.save(foto_path)
+
+        # Regra de Negócio para determinar o Status
+        # Exemplo de regra: se tiver mais de 50 mudas e pelo menos 2 visitas por hectare
+        if mudas >= 50 and rebrotas >= 20 and visitas >= 2:
+            status = "🌳 STATUS DA ÁREA: EM RECUPERAÇÃO"
+        else:
+            status = "🌱 STATUS DA ÁREA: ATENÇÃO"
+
+        # Salva no Banco de Dados
+        conn = sqlite3.connect('dados_area.db')
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO registros (rebrotas, mudas, tamanho, visitas, foto_path, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (rebrotas, mudas, tamanho, visitas, foto_path, status))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('index'))
+
+    # Busca os registros já salvos para exibir na tela
+    conn = sqlite3.connect('dados_area.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM registros ORDER BY id DESC')
+    registros = cursor.fetchall()
+    conn.close()
+
+    return render_template('index.html', registros=registros)
+
+if __name__ == '__main__':
+    app.run(debug=True)
