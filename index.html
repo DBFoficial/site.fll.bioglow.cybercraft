@@ -3,392 +3,338 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Monitoramento Florestal</title>
-  <!-- Tailwind CSS via CDN -->
+  <title>Monitoramento de Área de Restauração Florestal</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Google Fonts: Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    @keyframes pulse-subtle {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.03); opacity: 0.95; }
-    }
-    .badge-pulse {
-      animation: pulse-subtle 2s infinite ease-in-out;
-    }
-    /* Smooth transitions for view switches */
-    .fade-in {
-      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen py-8 px-4 sm:px-6">
+<body class="bg-slate-50 text-slate-800 min-h-screen py-10 px-4">
 
   <div class="max-w-4xl mx-auto space-y-6">
     
-    <!-- Top Bar Header -->
-    <header class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="bg-emerald-100 text-emerald-700 p-3 rounded-xl">
-          <i data-lucide="trees" class="w-7 h-7"></i>
-        </div>
-        <div>
-          <h1 class="text-xl font-bold text-slate-900 leading-tight">Monitoramento Florestal</h1>
-          <p class="text-slate-500 text-xs sm:text-sm">Módulo de Avaliação de Regeneração e Campo</p>
-        </div>
-      </div>
-      <div class="hidden sm:flex items-center gap-2 bg-emerald-50 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-full border border-emerald-200">
-        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
-        <span>Padrão Pacto Mata Atlântica</span>
-      </div>
+    <!-- Cabeçalho -->
+    <header class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+        <i data-lucide="trees" class="text-emerald-600"></i>
+        Formulário de Monitoramento Florestal
+      </h1>
+      <p class="text-slate-500 text-sm mt-1">Preencha os dados de campo para calcular o status preliminar da área.</p>
     </header>
 
-    <main class="grid grid-cols-1 gap-6">
+    <!-- Formulário de Entrada de Dados -->
+    <form id="calcForm" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
+      <h2 class="text-lg font-semibold text-slate-800 border-b border-slate-100 pb-2">1. Dados da Parcela</h2>
       
-      <!-- Input Form Card -->
-      <section id="formSection" class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 transition-all">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-          <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <i data-lucide="clipboard-list" class="w-5 h-5 text-emerald-600"></i>
-            Coleta de Dados de Campo
-          </h2>
-          <span class="text-xs text-slate-400 font-medium">* Todos os campos são necessários</span>
+      <div class="grid md:grid-cols-2 gap-4">
+        <!-- Quantidade de Rebrotas -->
+        <div>
+          <label for="rebrotas" class="block text-sm font-medium text-slate-700 mb-1">
+            Quantidade de Rebrotas
+          </label>
+          <div class="relative">
+            <input type="number" id="rebrotas" min="0" value="30" placeholder="Ex: 30"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition" required>
+            <i data-lucide="sprout" class="w-5 h-5 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
         </div>
 
-        <form id="forestForm" onsubmit="calcularEExibirResultado(event)" class="space-y-6">
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Rebrotas -->
-            <div class="space-y-1.5">
-              <label for="rebrotas" class="block text-sm font-semibold text-slate-700">
-                Quantidade de Rebrotas
-              </label>
-              <div class="relative">
-                <input type="number" id="rebrotas" min="0" step="1" required placeholder="Ex: 30"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition text-sm">
-                <i data-lucide="sprout" class="w-5 h-5 text-slate-400 absolute left-3 top-3"></i>
-              </div>
-              <p class="text-[11px] text-slate-500">Brotações de cepas nativas existentes na área.</p>
-            </div>
-
-            <!-- Mudas Nativas -->
-            <div class="space-y-1.5">
-              <label for="mudas" class="block text-sm font-semibold text-slate-700">
-                Quantidade de Mudas Nativas
-              </label>
-              <div class="relative">
-                <input type="number" id="mudas" min="0" step="1" required placeholder="Ex: 50"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition text-sm">
-                <i data-lucide="plant" class="w-5 h-5 text-slate-400 absolute left-3 top-3"></i>
-              </div>
-              <p class="text-[11px] text-slate-500">Mudas plantadas ou régua de regeneração natural.</p>
-            </div>
-
-            <!-- Área em m² -->
-            <div class="space-y-1.5">
-              <label for="area" class="block text-sm font-semibold text-slate-700">
-                Tamanho da Área (m²)
-              </label>
-              <div class="relative">
-                <input type="number" id="area" min="0.1" step="any" required placeholder="Ex: 100"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition text-sm">
-                <i data-lucide="maximize-2" class="w-5 h-5 text-slate-400 absolute left-3 top-3"></i>
-              </div>
-              <p class="text-[11px] text-slate-500">Área total do trecho sob monitoramento.</p>
-            </div>
-
-            <!-- Número de Visitas -->
-            <div class="space-y-1.5">
-              <label for="visitas" class="block text-sm font-semibold text-slate-700">
-                Número de Visitas Realizadas
-              </label>
-              <div class="relative">
-                <input type="number" id="visitas" min="0" step="1" required placeholder="Ex: 3"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition text-sm">
-                <i data-lucide="footprints" class="w-5 h-5 text-slate-400 absolute left-3 top-3"></i>
-              </div>
-              <p class="text-[11px] text-slate-500">Histórico de inspeções anteriores na parcela.</p>
-            </div>
+        <!-- Quantidade de Mudas Nativas -->
+        <div>
+          <label for="mudas" class="block text-sm font-medium text-slate-700 mb-1">
+            Quantidade de Mudas Nativas
+          </label>
+          <div class="relative">
+            <input type="number" id="mudas" min="0" value="50" placeholder="Ex: 50"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition" required>
+            <i data-lucide="plant" class="w-5 h-5 text-slate-400 absolute left-3 top-2.5"></i>
           </div>
+        </div>
 
-          <!-- Upload de Fotos -->
-          <div class="space-y-1.5">
-            <label class="block text-sm font-semibold text-slate-700">
-              Registros Fotográficos de Campo
-            </label>
-            <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/30 rounded-xl p-5 text-center cursor-pointer transition">
-              <input type="file" id="fotoInput" multiple accept="image/*" class="hidden" onchange="atualizarFotosPreview(this)">
-              <div class="flex flex-col items-center gap-2">
-                <div class="p-2.5 bg-white rounded-full shadow-sm text-slate-500">
-                  <i data-lucide="camera" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <span class="text-xs font-semibold text-emerald-700">Clique para selecionar</span>
-                  <span class="text-xs text-slate-500"> ou arraste as fotos aqui</span>
-                </div>
-                <p class="text-[11px] text-slate-400">Suporta múltiplos arquivos PNG, JPG ou WEBP</p>
-              </div>
-            </div>
-            <!-- Lista de previews das imagens -->
-            <div id="fotosPreviewList" class="flex flex-wrap gap-2 pt-2"></div>
+        <!-- Nativas Removidas -->
+        <div>
+          <label for="nativasRemovidas" class="block text-sm font-medium text-slate-700 mb-1">
+            Nativas Removidas
+          </label>
+          <div class="relative">
+            <input type="number" id="nativasRemovidas" min="0" value="0" placeholder="Ex: 0"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+            <i data-lucide="minus-circle" class="w-5 h-5 text-slate-400 absolute left-3 top-2.5"></i>
           </div>
+        </div>
 
-          <!-- Botão Submeter -->
-          <div class="pt-2">
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold py-3 px-6 rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm">
-              <i data-lucide="calculator" class="w-5 h-5"></i>
-              <span>Calcular & Enviar Relatório</span>
-            </button>
+        <!-- Destino das Mudas Removidas (Novo) -->
+        <div>
+          <label for="destinoMudasRemovidas" class="block text-sm font-medium text-slate-700 mb-1">
+            Destino das Mudas Removidas
+          </label>
+          <div class="relative">
+            <select id="destinoMudasRemovidas"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+              <option value="Não se aplica">Não se aplica</option>
+              <option value="Descarte / Compostagem">Descarte / Compostagem</option>
+              <option value="Replantio em outra área">Replantio em outra área</option>
+              <option value="Doação / Venda">Doação / Venda</option>
+              <option value="Outro">Outro</option>
+            </select>
+            <i data-lucide="arrow-right-left" class="w-5 h-5 text-slate-400 absolute left-3 top-2.5"></i>
           </div>
+        </div>
 
-        </form>
-      </section>
+        <!-- Leucenas Existentes -->
+        <div>
+          <label for="leucenasExistentes" class="block text-sm font-medium text-slate-700 mb-1">
+            Leucenas Existentes
+          </label>
+          <div class="relative">
+            <input type="number" id="leucenasExistentes" min="0" value="0" placeholder="Ex: 5"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500 absolute left-3 top-2.5"></i>
+          </div>
+        </div>
 
-      <section id="resultSection" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 fade-in space-y-6">
-        
-        <!-- Alerta e Header do Resultado -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <!-- Leucenas Removidas -->
+        <div>
+          <label for="leucenasRemovidas" class="block text-sm font-medium text-slate-700 mb-1">
+            Leucenas Removidas
+          </label>
+          <div class="relative">
+            <input type="number" id="leucenasRemovidas" min="0" value="0" placeholder="Ex: 5"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+            <i data-lucide="trash-2" class="w-5 h-5 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
+        </div>
+
+        <!-- Tamanho da Área (m²) -->
+        <div>
+          <label for="area" class="block text-sm font-medium text-slate-700 mb-1">
+            Tamanho Aproximado da Área (m²)
+          </label>
+          <div class="relative">
+            <input type="number" id="area" min="0.1" step="any" value="100" placeholder="Ex: 100"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition" required>
+            <i data-lucide="maximize-2" class="w-5 h-5 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
+        </div>
+
+        <!-- Número de Visitas -->
+        <div>
+          <label for="visitas" class="block text-sm font-medium text-slate-700 mb-1">
+            Número de Visitas
+          </label>
+          <div class="relative">
+            <input type="number" id="visitas" min="0" value="3" placeholder="Ex: 3"
+              class="w-full pl-10 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+            <i data-lucide="footprints" class="w-5 h-5 text-slate-400 absolute left-3 top-2.5"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload de Fotografias -->
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">
+          Fotografias da Área
+        </label>
+        <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center cursor-pointer hover:bg-slate-50 transition relative">
+          <i data-lucide="camera" class="w-8 h-8 text-slate-400 mx-auto mb-1"></i>
+          <span class="text-xs text-slate-500 block">Anexar registros fotográficos de campo</span>
+          <input type="file" id="fotos" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="atualizarContagemFotos(this)">
+        </div>
+        <p id="fotoCountText" class="text-xs text-slate-500 mt-1 hidden"></p>
+      </div>
+
+      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-lg transition shadow flex items-center justify-center gap-2 text-base">
+        <i data-lucide="calculator" class="w-5 h-5"></i> Calcular e Gerar Relatório
+      </button>
+    </form>
+
+    <!-- ÁREA DE RESULTADOS -->
+    <div id="resultadoSection" class="hidden space-y-6">
+      
+      <!-- 1. Faixa principal com o Status Calculado -->
+      <div id="statusBanner" class="p-6 rounded-2xl border shadow-sm transition-all flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div id="statusIcon" class="text-5xl">🟡</div>
           <div>
-            <span class="text-xs font-bold tracking-wider text-slate-400 uppercase">Diagnóstico da Parcela</span>
-            <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-              <i data-lucide="bar-chart-2" class="w-5 h-5 text-emerald-600"></i>
-              Resultado do Cálculo da Faixa
-            </h2>
-          </div>
-          <button onclick="novoCalculo()" class="self-start sm:self-auto text-xs text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 transition">
-            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-            Novo Cálculo
-          </button>
-        </div>
-
-        <div id="statusBanner" class="p-6 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-6 transition-all shadow-sm">
-          <div class="flex items-center gap-4 text-center md:text-left">
-            <div id="statusEmoji" class="text-4xl sm:text-5xl">🌱</div>
-            <div>
-              <div id="statusTag" class="text-xs font-bold uppercase tracking-wider mb-1">Status da Área</div>
-              <h3 id="statusTitle" class="text-xl sm:text-2xl font-black">---</h3>
-              <p id="statusDesc" class="text-xs sm:text-sm opacity-90 mt-0.5">---</p>
-            </div>
-          </div>
-
-          <!-- Medidor de Densidade -->
-          <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-black/5 text-center min-w-[160px]">
-            <span class="text-xs font-medium text-slate-500 block">Densidade Calculada</span>
-            <span id="densidadeValor" class="text-2xl font-black text-slate-900 block my-0.5">0,00</span>
-            <span class="text-[11px] font-semibold text-slate-600">indivíduos / m²</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Status da Área</span>
+            <h2 id="statusTitle" class="text-2xl font-extrabold text-slate-900">STATUS DA ÁREA: EM RECUPERAÇÃO</h2>
+            <p id="statusDesc" class="text-sm text-slate-600 mt-0.5">Regeneração intermediária registrada.</p>
           </div>
         </div>
+        <div class="bg-white/80 backdrop-blur px-5 py-3 rounded-xl border border-slate-200 text-center min-w-[160px]">
+          <span class="text-xs text-slate-500 block uppercase font-semibold">Densidade Calculada</span>
+          <span id="densidadeValor" class="text-2xl font-black text-slate-800">0,80</span>
+          <span class="text-xs text-slate-500 block">indivíduos / m²</span>
+        </div>
+      </div>
 
-        <div class="badge-pulse bg-gradient-to-r from-amber-50 via-amber-100/70 to-amber-50 border-2 border-amber-300 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="flex items-start gap-3.5">
-              <div class="p-2.5 bg-amber-500 text-white rounded-xl shadow-sm shrink-0 mt-0.5 sm:mt-0">
-                <i data-lucide="clock" class="w-6 h-6 animate-spin" style="animation-duration: 8s;"></i>
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
-                  <h4 class="font-bold text-amber-900 text-sm sm:text-base tracking-tight">RELATÓRIO SOB ANÁLISE TÉCNICA</h4>
-                </div>
-                <p class="text-xs text-amber-800 mt-1 leading-relaxed">
-                  A faixa acima representa o cálculo prévio. O enquadramento definitivo do <strong>Status da Área</strong> está dependente da auditoria técnica referente às <strong>fotografias anexadas</strong> e à consistência do <strong>número de visitas de monitoramento</strong>.
-                </p>
-              </div>
+      <!-- 2. Selo SOB ANÁLISE TÉCNICA -->
+      <div class="bg-amber-50 border border-amber-300 p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-start gap-3">
+          <div class="p-2 bg-amber-500 text-white rounded-xl mt-0.5 sm:mt-0">
+            <i data-lucide="clock" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+              </span>
+              <h3 class="font-bold text-amber-900 text-base">RELATÓRIO SOB ANÁLISE TÉCNICA</h3>
             </div>
-            <div class="bg-amber-200/60 border border-amber-300 text-amber-900 text-[11px] font-bold px-3 py-1.5 rounded-lg whitespace-nowrap self-end sm:self-center">
-              Selo de Verificação Pendente
-            </div>
+            <p class="text-xs text-amber-800 mt-1 max-w-xl leading-relaxed">
+              A faixa acima representa o cálculo prévio por densidade. O enquadramento definitivo do <strong>Status da Área</strong> está dependente da auditoria técnica referente às <strong>fotografias anexadas</strong>, manejo de mudas/espécies e consistência do <strong>número de visitas</strong>.
+            </p>
           </div>
         </div>
+        <span class="bg-amber-200/80 text-amber-900 border border-amber-300 text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap self-end sm:self-center">
+          Selo de Auditoria Pendente
+        </span>
+      </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
-          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <span class="text-xs text-slate-500 block">Total de Nativas</span>
-            <span id="metricTotal" class="text-lg font-bold text-slate-800">0</span>
-            <span class="text-[10px] text-slate-400 block">(Rebrotas + Mudas)</span>
+      <!-- 3. Resumo dos Dados Utilizados -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-400 font-medium block">Total de mudas</span>
+          <span id="resumoTotal" class="text-xl font-bold text-slate-800">80</span>
+          <span class="text-[10px] text-slate-400 block mt-0.5">(Rebrotas + Mudas)</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-400 font-medium block">Área Avaliada</span>
+          <span id="resumoArea" class="text-xl font-bold text-slate-800">100 m²</span>
+          <span class="text-[10px] text-slate-400 block mt-0.5">Tamanho da parcela</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-500 font-medium block">Nativas Removidas</span>
+          <span id="resumoNativasRemov" class="text-xl font-bold text-slate-700">0</span>
+          <span class="text-[10px] text-slate-400 block mt-0.5">Mudas retiradas</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-500 font-medium block">Destino das Removidas</span>
+          <span id="resumoDestino" class="text-sm font-bold text-slate-700 truncate block mt-1">Não se aplica</span>
+          <span class="text-[10px] text-slate-400 block mt-0.5">Encaminhamento</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-amber-600 font-medium block">Leucenas Exist.</span>
+          <span id="resumoLeucenasExist" class="text-xl font-bold text-amber-700">0</span>
+          <span class="text-[10px] text-slate-400 block mt-0.5">Em observação</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-500 font-medium block">Leucenas Remov.</span>
+          <span id="resumoLeucenasRemov" class="text-xl font-bold text-slate-700">0</span>
+          <span class="text-[10px] text-slate-400 block mt-0.5">Manejo efetuado</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-400 font-medium block">Visitas</span>
+          <span id="resumoVisitas" class="text-xl font-bold text-slate-800">3</span>
+          <span class="text-[10px] text-slate-400 block mt-0.5">Inspeções</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-xs text-slate-400 font-medium block">Fotos</span>
+          <span id="resumoFotos" class="text-xl font-bold text-slate-800">0 foto(s)</span>
+          <span class="text-[10px] text-slate-400 block mt-0.5">Em validação</span>
+        </div>
+      </div>
+
+      <!-- 4. Matriz de Referência -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-xs">
+        <div class="font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
+          <i data-lucide="info" class="w-4 h-4 text-slate-400"></i> Matriz de Referência para Densidade:
+        </div>
+        <div class="grid md:grid-cols-3 gap-2">
+          <div class="p-2 rounded-lg bg-red-50 border border-red-200 text-red-800">
+            <span class="font-bold block">🔴 ATENÇÃO</span>
+            <span>&lt; 0,5 /m² (Baixa regeneração)</span>
           </div>
-
-          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <span class="text-xs text-slate-500 block">Área Avaliada</span>
-            <span id="metricArea" class="text-lg font-bold text-slate-800">0 m²</span>
-            <span class="text-[10px] text-slate-400 block">Tamanho da parcela</span>
+          <div class="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
+            <span class="font-bold block">🟡 EM RECUPERAÇÃO</span>
+            <span>0,5 a &lt; 1,0 /m² (Intermediária)</span>
           </div>
-
-          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <span class="text-xs text-slate-500 block">Visitas Registradas</span>
-            <span id="metricVisitas" class="text-lg font-bold text-slate-800">0</span>
-            <span class="text-[10px] text-slate-400 block">Inspeções de campo</span>
-          </div>
-
-          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <span class="text-xs text-slate-500 block">Fotos Anexadas</span>
-            <span id="metricFotos" class="text-lg font-bold text-slate-800">0 arquivos</span>
-            <span class="text-[10px] text-slate-400 block">Em validação visual</span>
+          <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800">
+            <span class="font-bold block">🟢 EM PERFEITO ESTADO</span>
+            <span>≥ 1,0 /m² (Alta regeneração)</span>
           </div>
         </div>
+      </div>
 
-        <!-- Tabela de Referência da Matriz -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
-          <div class="font-bold text-slate-700 mb-2 flex items-center gap-1.5">
-            <i data-lucide="info" class="w-4 h-4 text-slate-500"></i>
-            Matriz de Referência para Densidade:
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-            <div class="p-2 rounded-lg bg-red-50 border border-red-200 text-red-800">
-              <span class="font-bold">🔴 ATENÇÃO</span>
-              <div class="text-[11px] opacity-80">&lt; 0,5 /m² (Baixa regeneração)</div>
-            </div>
-            <div class="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
-              <span class="font-bold">🟡 EM RECUPERAÇÃO</span>
-              <div class="text-[11px] opacity-80">0,5 a &lt; 1,0 /m² (Intermediária)</div>
-            </div>
-            <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800">
-              <span class="font-bold">🟢 EM PERFEITO ESTADO</span>
-              <div class="text-[11px] opacity-80">≥ 1,0 /m² (Alta regeneração)</div>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-    </main>
+    </div>
 
   </div>
 
   <script>
-    // Inicializa ícones do Lucide
     lucide.createIcons();
 
-    // Elementos do DOM
-    const dropZone = document.getElementById('dropZone');
-    const fotoInput = document.getElementById('fotoInput');
-    const fotosPreviewList = document.getElementById('fotosPreviewList');
-
-    // Drag and Drop de fotos
-    dropZone.addEventListener('click', () => fotoInput.click());
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-      dropZone.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        dropZone.classList.add('border-emerald-500', 'bg-emerald-50/50');
-      });
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-      dropZone.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('border-emerald-500', 'bg-emerald-50/50');
-      });
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-      const dt = e.dataTransfer;
-      const files = dt.files;
-      fotoInput.files = files;
-      atualizarFotosPreview(fotoInput);
-    });
-
-    // Renderiza previews e nomes dos arquivos selecionados
-    function atualizarFotosPreview(input) {
-      fotosPreviewList.innerHTML = '';
-      const count = input.files.length;
-      
-      if (count > 0) {
-        Array.from(input.files).forEach((file, idx) => {
-          const badge = document.createElement('div');
-          badge.className = 'flex items-center gap-1.5 bg-slate-200 text-slate-700 text-xs px-2.5 py-1 rounded-lg font-medium';
-          badge.innerHTML = `
-            <i data-lucide="image" class="w-3.5 h-3.5 text-slate-500"></i>
-            <span class="truncate max-w-[120px]">${file.name}</span>
-          `;
-          fotosPreviewList.appendChild(badge);
-        });
-        lucide.createIcons();
+    function atualizarContagemFotos(input) {
+      const countText = document.getElementById('fotoCountText');
+      if (input.files && input.files.length > 0) {
+        countText.textContent = `${input.files.length} foto(s) selecionada(s)`;
+        countText.classList.remove('hidden');
+      } else {
+        countText.classList.add('hidden');
       }
     }
 
-    // Função de cálculo principal acionada ao enviar o formulário
-    function calcularEExibirResultado(event) {
-      event.preventDefault();
+    document.getElementById('calcForm').addEventListener('submit', function(e) {
+      e.preventDefault();
 
-      // Obtenção dos dados digitados
       const rebrotas = parseFloat(document.getElementById('rebrotas').value) || 0;
       const mudas = parseFloat(document.getElementById('mudas').value) || 0;
+      const nativasRemov = parseInt(document.getElementById('nativasRemovidas').value) || 0;
+      const destinoMudas = document.getElementById('destinoMudasRemovidas').value;
+      const leucenasExist = parseInt(document.getElementById('leucenasExistentes').value) || 0;
+      const leucenasRemov = parseInt(document.getElementById('leucenasRemovidas').value) || 0;
       const area = parseFloat(document.getElementById('area').value) || 0;
       const visitas = parseInt(document.getElementById('visitas').value) || 0;
-      const totalFotos = fotoInput.files ? fotoInput.files.length : 0;
+      const fotosInput = document.getElementById('fotos');
+      const numFotos = fotosInput.files ? fotosInput.files.length : 0;
 
-      if (area <= 0) {
-        alert('Por favor, informe uma área em m² maior que zero.');
-        return;
-      }
+      if (area <= 0) return;
 
-      // Cálculo da densidade
-      const totalIndividuos = rebrotas + mudas;
-      const densidade = totalIndividuos / area;
+      const total = rebrotas + mudas;
+      const densidade = total / area;
 
-      // Elementos do painel de resultado
-      const statusBanner = document.getElementById('statusBanner');
-      const statusEmoji = document.getElementById('statusEmoji');
+      // Atualizar métricas no painel inferior
+      document.getElementById('resumoTotal').textContent = total;
+      document.getElementById('resumoArea').textContent = `${area} m²`;
+      document.getElementById('resumoNativasRemov').textContent = nativasRemov;
+      document.getElementById('resumoDestino').textContent = destinoMudas;
+      document.getElementById('resumoLeucenasExist').textContent = leucenasExist;
+      document.getElementById('resumoLeucenasRemov').textContent = leucenasRemov;
+      document.getElementById('resumoVisitas').textContent = visitas;
+      document.getElementById('resumoFotos').textContent = `${numFotos} foto(s)`;
+      document.getElementById('densidadeValor').textContent = densidade.toFixed(2).replace('.', ',');
+
+      // Atualizar status da faixa principal
+      const banner = document.getElementById('statusBanner');
+      const statusIcon = document.getElementById('statusIcon');
       const statusTitle = document.getElementById('statusTitle');
       const statusDesc = document.getElementById('statusDesc');
-      const densidadeValor = document.getElementById('densidadeValor');
 
-      // Atualização de métricas complementares
-      document.getElementById('metricTotal').textContent = totalIndividuos;
-      document.getElementById('metricArea').textContent = `${area.toLocaleString('pt-BR')} m²`;
-      document.getElementById('metricVisitas').textContent = visitas;
-      document.getElementById('metricFotos').textContent = `${totalFotos} foto(s)`;
-      densidadeValor.textContent = densidade.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-      // Classificação conforme a tabela informada
       if (densidade < 0.5) {
-        // 🔴 ATENÇÃO (< 0,5/m²)
-        statusBanner.className = 'p-6 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-6 transition-all shadow-sm bg-red-50 border-red-200 text-red-950';
-        statusEmoji.textContent = '🔴';
+        banner.className = 'p-6 rounded-2xl border shadow-sm transition-all flex flex-col md:flex-row items-center justify-between gap-4 bg-red-50 border-red-200';
+        statusIcon.textContent = '🔴';
         statusTitle.textContent = 'STATUS DA ÁREA: ATENÇÃO';
-        statusDesc.textContent = 'Baixa regeneração natural/plantio observada.';
+        statusTitle.className = 'text-2xl font-extrabold text-red-900';
+        statusDesc.textContent = 'Baixa densidade de indivíduos regenerantes.';
       } else if (densidade >= 0.5 && densidade < 1.0) {
-        // 🟡 EM RECUPERAÇÃO (0,5 a < 1,0/m²)
-        statusBanner.className = 'p-6 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-6 transition-all shadow-sm bg-amber-50 border-amber-200 text-amber-950';
-        statusEmoji.textContent = '🟡';
+        banner.className = 'p-6 rounded-2xl border shadow-sm transition-all flex flex-col md:flex-row items-center justify-between gap-4 bg-amber-50 border-amber-200';
+        statusIcon.textContent = '🟡';
         statusTitle.textContent = 'STATUS DA ÁREA: EM RECUPERAÇÃO';
-        statusDesc.textContent = 'Regeneração em estágio intermediário.';
+        statusTitle.className = 'text-2xl font-extrabold text-amber-900';
+        statusDesc.textContent = 'Regeneração intermediária de indivíduos.';
       } else {
-        // 🟢 EM PERFEITO ESTADO (>= 1,0/m²)
-        statusBanner.className = 'p-6 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-6 transition-all shadow-sm bg-emerald-50 border-emerald-200 text-emerald-950';
-        statusEmoji.textContent = '🟢';
+        banner.className = 'p-6 rounded-2xl border shadow-sm transition-all flex flex-col md:flex-row items-center justify-between gap-4 bg-emerald-50 border-emerald-200';
+        statusIcon.textContent = '🟢';
         statusTitle.textContent = 'STATUS DA ÁREA: EM PERFEITO ESTADO';
+        statusTitle.className = 'text-2xl font-extrabold text-emerald-900';
         statusDesc.textContent = 'Alta densidade de indivíduos regenerantes.';
       }
 
-      // Exibe a tela de resultado e oculta o formulário para clareza
-      document.getElementById('formSection').classList.add('hidden');
-      const resultSection = document.getElementById('resultSection');
-      resultSection.classList.remove('hidden');
-
-      // Scroll suave até o resultado
-      resultSection.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Função para resetar e voltar ao formulário
-    function novoCalculo() {
-      document.getElementById('resultSection').classList.add('hidden');
-      document.getElementById('formSection').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+      // Exibir área de resultados
+      const resSection = document.getElementById('resultadoSection');
+      resSection.classList.remove('hidden');
+      resSection.scrollIntoView({ behavior: 'smooth' });
+    });
   </script>
 </body>
 </html>
