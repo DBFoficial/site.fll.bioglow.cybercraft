@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitoramento de Áreas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        form { background: #f4f4f4; padding: 20px; border-radius: 8px; max-width: 400px; }
+        label { display: block; margin-top: 10px; }
+        input { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        button { margin-top: 15px; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; width: 100%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <h2>Cadastro de Monitoramento de Área</h2>
+
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <label>Quantidade de Rebrotas:</label>
+        <input type="number" name="rebrotas" required>
+
+        <label>Quantidade de Mudas Nativas:</label>
+        <input type="number" name="mudas" required>
+
+        <label>Tamanho Aproximado da Área (ha):</label>
+        <input type="number" step="0.01" name="tamanho" required>
+
+        <label>Número de Visitas:</label>
+        <input type="number" name="visitas" required>
+
+        <label>Fotografia:</label>
+        <input type="file" name="foto" accept="image/*" required>
+
+        <button type="submit">Salvar Registro</button>
+    </form>
+
+    <h2>Histórico de Registros</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Rebrotas</th>
+            <th>Mudas</th>
+            <th>Área (ha)</th>
+            <th>Visitas</th>
+            <th>Status</th>
+        </tr>
+        {% for item in registros %}
+        <tr>
+            <td>{{ item[0] }}</td>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[2] }}</td>
+            <td>{{ item[3] }}</td>
+            <td>{{ item[4] }}</td>
+            <td><strong>{{ item[6] }}</strong></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
