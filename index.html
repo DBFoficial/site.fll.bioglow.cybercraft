@@ -330,19 +330,19 @@
       if (densidade < 0.5) {
         banner.className = 'p-6 rounded-2xl border shadow-sm transition-all flex flex-col md:flex-row items-center justify-between gap-4 bg-red-50 border-red-200';
         statusIcon.textContent = '🔴';
-        statusTitle.textContent = 'STATUS DA ÁREA: ATENÇÃO';
+        statusTitle.textContent = 'ATENÇÃO EXTREMA!';
         statusTitle.className = 'text-2xl font-extrabold text-red-900';
         statusDesc.textContent = 'Baixa densidade de indivíduos regenerantes.';
       } else if (densidade >= 0.5 && densidade < 1.0) {
         banner.className = 'p-6 rounded-2xl border shadow-sm transition-all flex flex-col md:flex-row items-center justify-between gap-4 bg-amber-50 border-amber-200';
         statusIcon.textContent = '🟡';
-        statusTitle.textContent = 'STATUS DA ÁREA: EM RECUPERAÇÃO';
+        statusTitle.textContent = 'EM RECUPERAÇÃO PROFUNDA';
         statusTitle.className = 'text-2xl font-extrabold text-amber-900';
         statusDesc.textContent = 'Regeneração intermediária de indivíduos.';
       } else {
         banner.className = 'p-6 rounded-2xl border shadow-sm transition-all flex flex-col md:flex-row items-center justify-between gap-4 bg-emerald-50 border-emerald-200';
         statusIcon.textContent = '🟢';
-        statusTitle.textContent = 'STATUS DA ÁREA: EM PERFEITO ESTADO';
+        statusTitle.textContent = 'STATUS DA ÁREA: BOM ESTADO DE RECUPERAÇÃO';
         statusTitle.className = 'text-2xl font-extrabold text-emerald-900';
         statusDesc.textContent = 'Alta densidade de indivíduos regenerantes.';
       }
